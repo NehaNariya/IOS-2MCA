@@ -1,0 +1,369 @@
+AlertController
+Segue
+TableView
+WebView
+Custom TableView
+JSON
+UIImageView
+UserDefaults
+UITabBar & UINavigation 
+ 
+ 
+ 
+JSON - NEWS DATA
+ 
+func loadnewdata()
+    {
+        
+        let myNewUrl = URL(string: "https://newsapi.org/v2/everything?q=apple&from=2022-03-13&to=2022-03-13&sortBy=popularity&apiKey=e25fb41c8d7e46d7a94ab8b3e837642c")
+        
+        let request = URLRequest(url: myNewUrl!)
+        
+        //create task to esatablish connection = newapi.org
+        
+        let task = try! URLSession.shared.dataTask(with: request)
+        { (idata,URLResponse,Error) in
+            
+            let jsonData = try! JSONSerialization.jsonObject(with: idata!, options: .mutableContainers) as! NSDictionary
+            
+            let articles = jsonData.value(forKey: "articles") as! NSArray
+            let title_info = articles.value(forKey: "title")
+            
+            print(title_info)
+        }
+        
+        task.resume()
+    }
+ 
+ 
+—-----
+Custom TableView
+//
+//  ViewController.swift
+//  IPL Teams
+//
+//  Created by Dhaval on 15/02/22.
+//
+ 
+import UIKit
+ 
+class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource {
+    
+    let imgArray = ["csk.jpg","jk.jpg","kkr.jpeg","rcb.jpg","rr.jpg","srh.png"]
+    let titleArray = ["Chenai Super King","Delhi Daredevil","Kolkatta Knight Rider","Royal Challangers","Rajasthan Royals","Sunrise Hyderabad"]
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return imgArray.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "myCell") as! myTableCell
+        cell.myImage.image = UIImage(named: imgArray[indexPath.row])
+        cell.myTitle.text = titleArray[indexPath.row]
+        return cell
+        }
+    
+func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let selectedteam = titleArray[indexPath.row]
+        
+        let alert = UIAlertController(title: "IPL Tema", message: "You have selected \(selectedteam)", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Okay", style: .default, handler: nil))
+        self.present(alert,animated: true,completion: nil)
+    }
+ 
+ 
+ 
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        // Do any additional setup after loading the view.
+    }
+ 
+ 
+}
+ 
+ 
+ 
+ 
+Browser - 
+WebView
+//
+//  ViewController.swift
+//  Browser1
+//
+//  Created by Dhaval on 28/01/22.
+//
+ 
+import UIKit
+ 
+class ViewController: UIViewController,UIWebViewDelegate {
+ 
+    let alert = UIAlertController(title: "Please Wait...", message: "Page is being loaded", preferredStyle: .alert)
+    
+    @IBOutlet weak var myWebAddress: UITextField!
+    
+    @IBOutlet weak var myWebView: UIWebView!
+   
+    var myaddress:String = ""
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        //Home page // www.google.com
+       
+        loadWebSite(address: "https://www.google.com")
+    }
+ 
+    @IBAction func Submit(_ sender: Any) {
+       
+        loadWebSite(address: myWebAddress.text!)
+    }
+    
+    func loadWebSite(address:String)
+    {
+        var newaddress = ""
+        if (!address.contains("https://") && address.contains(".com"))
+        {
+                newaddress = "https://" + address
+                
+        }else
+        {
+                newaddress = address
+        }
+        
+        if(!address.contains(".com"))
+        {
+            if (address.contains(" "))
+            {
+                newaddress = address.replacingOccurrences(of: " ", with: "+")
+                print(newaddress)
+            }
+            newaddress = "https://www.google.com/search?q=" + newaddress
+        }
+        
+    
+        let myurl = NSURL(string: newaddress)
+        let urlreq = NSURLRequest(url: myurl as! URL) as! NSURLRequest
+        myWebView.loadRequest(urlreq as URLRequest)
+    }
+    
+    
+    
+    func webViewDidStartLoad(_ webView: UIWebView) {
+        //what to be done when page is being loaded..
+        self.present(alert,animated: true,completion: nil)
+    }
+    
+    func webViewDidFinishLoad(_ webView: UIWebView) {
+        //what to be done when page is loaded...
+        alert.dismiss(animated: true, completion: nil)
+    }
+    
+}
+ 
+ 
+ 
+ 
+ 
+TableView
+ 
+//
+//  ViewController.swift
+//  CricketTeam
+//
+//  Created by Dhaval on 31/01/22.
+//
+ 
+import UIKit
+ 
+class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource {
+   
+    let teamlist = ["MS Dhoni","Virat Kohli","Rohit Sharma","Rahul Dravid"]
+    //No of items/rows in list (tableview)
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return teamlist.count
+    }
+    
+    //define and assign cell value to the tableview (List)
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        //Step 1 : create/define a cell
+        let cell = UITableViewCell(style: .default, reuseIdentifier: "myTableView") as! UITableViewCell
+        //Step 2 : Assign a value to the cell
+        cell.textLabel?.text = teamlist[indexPath.row]
+        //Step 3: return it
+        return cell
+    }
+    
+    //which return cell id --> clicked/Selected
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        let alert = UIAlertController(title: "Cricket Team", message: "You have selected \(teamlist[indexPath.row])", preferredStyle: .alert)
+        
+        alert.addAction(UIAlertAction(title: "Okay", style: .default, handler: nil))
+        
+        self.present(alert,animated: true,completion: nil)
+        
+    }
+ 
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        // Do any additional setup after loading the view.
+    }
+ 
+ 
+}
+ 
+ 
+ 
+SEGUE
+ 
+//FIRST PAGE I.E. VIEWCONTROLLER.SWIFT
+ @IBAction func submit(_ sender: Any) {
+        performSegue(withIdentifier: "iBridge", sender: self)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        //crate obj of second page
+        let svc = segue.destination as? SecondPage
+        
+        svc?.putStr = NameTextFeild.text!
+    }
+ 
+//SECOND PAGE
+ @IBOutlet weak var myLabel: UILabel!
+    var putStr:String = ""
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+ 
+        myLabel.text = putStr
+    }
+ 
+ 
+ 
+ 
+ALERTCONTROLLER 
+—--------------------------------------------------------------------------------------
+ 
+@IBAction func submit(_ sender: Any) {
+        //button's click event
+        //topic name : UIAlertController
+        //Dt : 21/01/2022 6BCA
+        //Step 1 : create object for alert
+        let alert = UIAlertController(title: "KBC - Quiz 1", message: "What is a swift lang?", preferredStyle: .alert)
+        //Step 2.1: add an action i.e "Yes" / "Agree" / "Ok"
+        alert.addAction(UIAlertAction(title: "A. network protocol", style: .default, handler: nil))
+        //Step 2.2: add an action i.e "No" / "Disagree" / "Cancel"
+        alert.addAction(UIAlertAction(title: "B. Router", style: .default, handler: {ACTION in print("Incorrect Answer")}))
+        //Step 2.3 :
+        alert.addAction(UIAlertAction(title: "C. iOS Dev Lang", style: .default, handler: {ACTION in print("Correct Answer")}))
+        //Step 2.4:
+        alert.addAction(UIAlertAction(title: "D. None of above", style: .default, handler: {ACTION in print("Incorrect Answer")}))
+        
+       //Step 3 : call/show alert
+        self.present(alert, animated: true, completion: nil)
+   }
+-----------------------------------------------------------------------------------------
+ 
+import UIKit
+/*
+var name = "Dhaval Nimavat"
+print("Hello " ,name , "How are you?")
+ 
+ //Print Command
+print("20","30","40",separator: "*",terminator: "Thank You")
+ 
+ //Variable Declaration
+var a:Double = 30
+var b:Double = 40
+var c:Double = 3
+c = a + b;
+print(a,b,c,separator: "-")
+ 
+//Switch using Int
+ 
+var a = 30
+var b = 40
+var c = 10
+switch c
+{
+case 1: c = a + b
+    print(c)
+case 10: c = c * c
+    print(c)
+default: print("Invalid input")
+}
+ 
+//Switch using String
+var p = 30
+var q = 45
+var r = "Substraction"
+switch r
+{
+case "Addition" : p = p + q
+    print(p)
+case "Substraction" : p = p - q
+    print(p)
+default:print("Invalid Input")
+}
+ 
+//Array
+//43 --> 97
+var a = ["Raj","Jay","Dhaval","Kevin"]
+var i = a.count - 1
+//Loop
+while i >= 0
+{
+   if a[i] == "Kevin"
+    {
+        a[i] = "Jeet"
+    }
+    i = i - 1
+}
+print(a)
+ 
+//Dictionary
+ 
+var dict = ["A":"Apple","B":"Ball","C":"Cake"]
+dict["C"] = "Car"
+dict.updateValue("Cartoon", forKey: "C")
+print(dict["C"]!)
+dict.removeValue(forKey: "B")
+dict["D"] = "Dog"
+print(dict)
+//updating value of elements within dictionary
+ 
+var ls = [1:"Om Jasani",2:"Yagnik",3:"Akshay",45:"Hardik"]
+ls.updateValue("Pratik", forKey: 45)
+print(ls[45]!)
+*/
+//Tuple
+var a = (12,23,34,"dhaval")
+a.1 = 45
+print(a)
+ 
+//Set
+ 
+var a:Set = [29,32,33,44]
+var b:Set = [22,29,24,45,55,56]
+print(a.union(b))
+print(a.intersection(b))
+ 
+ 
+//Enumeration
+ 
+Solution
+import UIKit
+enum Weather {
+case Mumbai case Pune case Delhi case Rajkot
+}
+var choice = Weather.Rajkot
+switch choice {
+case .Mumbai:
+print("Mumbai's Temp = 30C") case .Pune:
+print("Pune's Temp = 40C") case .Delhi:
+print("Delhi's Temp = 45C") case .Rajkot:
+print("Rajkot's Temp = 43C") }
+Output:
+Rajkot's Temp = 43C
+ 
+
+
