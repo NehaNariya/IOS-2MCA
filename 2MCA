@@ -1,3 +1,152 @@
+ 
+//Task 2
+ 
+ @IBAction func Submirt(_ sender: Any) {
+        
+        // define url
+        let irequest = NSMutableURLRequest(url: NSURL(string: "https://patelhinalm9.000webhostapp.com/student_insert_data.php") as! URL)
+        
+        irequest.httpMethod = "POST"
+        
+        if(mySid.text! != nil){
+            s = Int(mySid.text!)
+            
+        }else{ s = 0 }
+        n = mySname.text!
+        c = myCity.text!
+        m = Int(myMno.text!)
+        
+        let putString = "isid=\(s)&isname=\(n)&icity=\(c)&imno=\(m)"
+        
+        irequest.httpBody = putString.data(using: .utf8)
+        
+        let task = URLSession.shared.dataTask(with: irequest as URLRequest)
+        
+        task.resume()
+        
+        print("Record Inserted")
+        
+        
+    }
+ 
+ 
+//Data Upload Task 
+//22/06/2022
+let url = URL(string: "https://api.rku.ac.in/treeroutes/treeinsert.php")!
+        var request = URLRequest(url: url)
+                request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+        
+        request.httpMethod = "POST"
+        
+        let parameters:[String:Any] = [
+            "email_address":email,
+            "botonical_name":botonicalNameLabel.text!,
+            "latitude":lat,
+            "longitude":log,
+            "location_description":locationDescLabel.text!,
+            "angle":angleLable.text!,
+            "distance_from_trunck":treedistanceLabel.text!,
+            "canopy_diameter":canopydistanceLabel.text!,
+            "tree_girth":girthDistanceLAbel.text!,
+            "age":ageLabel.text!,
+            "health":healthLabel.text!,
+            "context":contextLabel.text!,
+            "remark":remarkLabel.text!,
+            "photo":iimg
+        ]
+        
+      
+       	    request.httpBody = parameters.percentEncoded()          
+             let task = URLSession.shared.dataTask(with: request)
+             task.resume()
+   
+ 
+ 
+ 
+//Json Parsing
+//
+//  ViewController.swift
+//  APPLE_NEWS
+//
+//  Created by Dhaval on 20/06/2022
+//
+ 
+import UIKit
+ 
+class ViewController:
+    UIViewController,UITableViewDataSource,UITableViewDelegate {
+    
+    var imgArray = [String]()
+    var titleArray = [String]()
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return titleArray.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "myCell") as! myTableViewCell
+        
+        cell.myTitle.text = titleArray[indexPath.row]
+        //cell.myTitle.text = "RKU"
+        let iURL = URL(string: imgArray[indexPath.row])
+        let imgData = try! Data(contentsOf: iURL!)
+        cell.myImage.image = UIImage(data: imgData)
+        cell.layer.borderWidth = 2
+        cell.layer.borderColor = CGColor(red: 1, green: 1, blue: 1, alpha: 1)
+        cell.layer.cornerRadius = 15
+    
+        return cell
+    }
+    
+ 
+    @IBOutlet weak var myTableView: UITableView!
+    
+    
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        loadnewdata()
+    }
+ 
+    func loadnewdata()
+    {
+        
+        let myNewUrl = URL(string: "https://newsapi.org/v2/everything?q=tesla&from=2022-05-20&sortBy=publishedAt&apiKey=e25fb41c8d7e46d7a94ab8b3e837642c")
+        
+        let request = URLRequest(url: myNewUrl!)
+        
+        //create task to esatablish connection = newapi.org
+         
+        let task = try! URLSession.shared.dataTask(with: request)
+        {
+            (idata,URLResponse,Error) in
+            
+            let jsonData = try! JSONSerialization.jsonObject(with: idata!, options: .mutableContainers) as! NSDictionary
+            
+            let articles = jsonData.value(forKey: "articles") as! NSArray
+            let title_info = articles.value(forKey: "title")
+            let img_info = articles.value(forKey: "urlToImage")
+            
+//            self.titleArray = title_info as! [String]
+//            self.imgArray = img_info as! [String]
+//
+//            print(self.titleArray)
+//            DispatchQueue.main.async {
+//                self.myTableView.reloadData()
+//            }
+            
+            // Print the articles , title_info and img_info
+            
+            //print(title_info)
+        }
+        
+        task.resume()
+    }
+ 
+}
+ 
+ 
+ 
 //MapKit View
 //Multiple locations point
  
