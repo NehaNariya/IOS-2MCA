@@ -8,6 +8,7 @@ print( "Value of key = 2 is \(someDict[2])" )
 print( "Value of key = 3 is \(someDict[3])" )
 
 //update Dictionaries
+
 var someDict:[Int:String] = [1:"One", 2:"Two", 3:"Three"]
 var oldVal = someDict.updateValue("New value of one", forKey: 1)
 var someVar = someDict[1]
@@ -19,6 +20,7 @@ print( "Value of key = 3 is \(someDict[3])" )
 
 
 //remove Dictionaries
+
 var someDict:[Int:String] = [1:"One", 2:"Two", 3:"Three"]
 var removedValue = someDict.removeValue(forKey: 2)
 
@@ -27,6 +29,7 @@ print( "Value of key = 2 is \(someDict[2])" )
 print( "Value of key = 3 is \(someDict[3])" )
 
 //Swift Enumeration
+
 // define enum 
 enum Season {
   
@@ -43,6 +46,7 @@ currentSeason = Season.summer
 print("Current Season:", currentSeason)
 
 //switch-case Enumeration
+
 enum PizzaSize {
   case small, medium, large
 }
@@ -61,6 +65,7 @@ switch(size) {
 }
 
 //Swift create and modify Tuple
+
 // create tuple with two elements
 var product = ("MacBook", 1099.99)
 
@@ -76,15 +81,18 @@ print("Price:", product.1)
 
 
 //swift array
+
 var languages = ["Swift", "Java", "C++"]
 print(languages[0])   
 print(languages[2])   
 
 ///Set in Swift
+
 var studentID : Set = [112, 114, 116, 118, 115]
 print("Student ID: \(studentID)")
 
 //loop -->for in
+
 var someInts:[Int] = [10, 20, 30]
 
 for index in someInts {
@@ -92,6 +100,7 @@ for index in someInts {
 }
 
 //while loop
+
 var index = 10
 
 while index < 20 {

@@ -1,11 +1,128 @@
+@IBAction func Submirt(_ sender: Any) {
+        // define url
+        let irequest = NSMutableURLRequest(url: NSURL(string: "https://patelhinalm9.000webhostapp.com/student_insert_data.php") as! URL)
+        irequest.httpMethod = "POST"        
+        if(mySid.text! != nil){
+            s = Int(mySid.text!)
+            
+        }else{ s = 0 }
+        n = mySname.text!
+        c = myCity.text!
+        m = Int(myMno.text!)
+        let putString = "isid=\(s)&isname=\(n)&icity=\(c)&imno=\(m)"
+        
+        irequest.httpBody = putString.data(using: .utf8)
+        let task = URLSession.shared.dataTask(with: irequest as URLRequest)\
+        task.resume()
+        print("Record Inserted")
+    }
+//Data Upload Task 
+//22/06/2022
+let url = URL(string: "https://api.rku.ac.in/treeroutes/treeinsert.php")!
+        var request = URLRequest(url: url)
+                request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+        
+        request.httpMethod = "POST"   
+        let parameters:[String:Any] = [
+            "email_address":email,
+            "botonical_name":botonicalNameLabel.text!,
+            "latitude":lat,
+            "longitude":log,
+            "location_description":locationDescLabel.text!,
+            "angle":angleLable.text!,
+            "distance_from_trunck":treedistanceLabel.text!,
+            "canopy_diameter":canopydistanceLabel.text!,
+            "tree_girth":girthDistanceLAbel.text!,
+            "age":ageLabel.text!,
+            "health":healthLabel.text!,
+            "context":contextLabel.text!,
+            "remark":remarkLabel.text!,
+            "photo":iimg
+        ]
+       	    request.httpBody = parameters.percentEncoded()          
+             let task = URLSession.shared.dataTask(with: request)
+             task.resume()
+//Json Parsing
+import UIKit
+ 
+class ViewController:
+    UIViewController,UITableViewDataSource,UITableViewDelegate {
+    
+    var imgArray = [String]()
+    var titleArray = [String]()
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return titleArray.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "myCell") as! myTableViewCell
+        
+        cell.myTitle.text = titleArray[indexPath.row]
+        //cell.myTitle.text = "RKU"
+        let iURL = URL(string: imgArray[indexPath.row])
+        let imgData = try! Data(contentsOf: iURL!)
+        cell.myImage.image = UIImage(data: imgData)
+        cell.layer.borderWidth = 2
+        cell.layer.borderColor = CGColor(red: 1, green: 1, blue: 1, alpha: 1)
+        cell.layer.cornerRadius = 15
+    
+        return cell
+    }
+ 
+    @IBOutlet weak var myTableView: UITableView!
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        loadnewdata()
+    }
+ 
+    func loadnewdata()
+    {        
+        let myNewUrl = URL(string: "https://newsapi.org/v2/everything?q=tesla&from=2022-05-20&sortBy=publishedAt&apiKey=e25fb41c8d7e46d7a94ab8b3e837642c")
+        
+        let request = URLRequest(url: myNewUrl!)
+        
+        //create task to esatablish connection = newapi.org
+         
+        let task = try! URLSession.shared.dataTask(with: request)
+        {
+            (idata,URLResponse,Error) in
+            
+            let jsonData = try! JSONSerialization.jsonObject(with: idata!, options: .mutableContainers) as! NSDictionary
+            
+            let articles = jsonData.value(forKey: "articles") as! NSArray
+            let title_info = articles.value(forKey: "title")
+            let img_info = articles.value(forKey: "urlToImage")
+            
+//            self.titleArray = title_info as! [String]
+//            self.imgArray = img_info as! [String]
+//
+//            print(self.titleArray)
+//            DispatchQueue.main.async {
+//                self.myTableView.reloadData()
+//            }
+            
+            // Print the articles , title_info and img_info
+            
+            //print(title_info)
+        }
+        
+        task.resume()
+    }
+ 
+}
+ 
+ 
+ 
 //MapKit View
 //Multiple locations point
 //  ViewController.swift
 //  MultiplePoints Maps
-//  Created by Dhaval on 06/06/22.
  
 import UIKit
 import MapKit
+ 
  
 class ViewController: UIViewController,MKMapViewDelegate {
     let locations = [
@@ -21,6 +138,7 @@ class ViewController: UIViewController,MKMapViewDelegate {
     }
     
     override func viewDidAppear(_ animated: Bool) {
+       
         for location in locations
         {
             //Step 1: Location 2D
@@ -47,6 +165,8 @@ class ViewController: UIViewController,MKMapViewDelegate {
        pointer.glyphImage = UIImage(named: "th.png")
         return pointer
     }
+  
+    
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         print("Function will be called whenever point/location is clicked")
         
@@ -65,14 +185,12 @@ class ViewController: UIViewController,MKMapViewDelegate {
         
         shareViewController.popoverPresentationController?.sourceView = view.self
         
-        self.present(shareViewController,animated: true,completion: nil)
+        self.present(shareViewController,animated: true,completion: nil)   
     }
 }
- 
 //Animation II
 //  ViewController.swift
 //  AnimationII
-//  Created by Dhaval on 19/05/22.
  
 import UIKit
  
@@ -115,6 +233,7 @@ class ViewController: UIViewController {
         })
         
     }
+    
     @IBAction func Btn2(_ sender: Any) {
     }
 }
@@ -132,9 +251,7 @@ class ViewController: UIViewController {
  
 //Audio Player – with CollectionView
 //  ViewController.swift
-//  MeditationPlayer
-//  Created by Dhaval on 09/05/22.
-
+//  MeditationPlayer|
 import UIKit
 import AVKit
 import AVFoundation
@@ -215,8 +332,6 @@ class ViewController: UIViewController,UICollectionViewDelegate,UICollectionView
 //Video Player Online/Offline
 //  ViewController.swift
 //  VideoPlayer(Online)
-//  Created by Dhaval on 06/05/22.
- 
 import UIKit
 import AVKit
 import AVFoundation
@@ -254,14 +369,12 @@ class ViewController: UIViewController {
         
         self.present(controller,animated: true,completion: nil)
             
-        } 
+        }
+        
 }
- 
 //Dynamic PickerView
 //  ViewController.swift
 //  DataPickerView
-//  Created by Dhaval on 27/04/22.
-
 import UIKit
  
 class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSource {
@@ -279,6 +392,7 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         return list[row]
     }
+    
  
     var picker = UIPickerView()
     var toolBar = UIToolbar()
@@ -302,6 +416,8 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
            toolBar.barStyle = .blackTranslucent
            toolBar.items = [UIBarButtonItem.init(title: "Done", style: .done, target: self, action: #selector(onDoneButtonTapped))]
            self.view.addSubview(toolBar)
+    }
+    
     
     @objc func onDoneButtonTapped() {
         countryName.text! = list[picker.selectedRow(inComponent: 0)]
@@ -309,12 +425,10 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
         picker.removeFromSuperview()
     }
 }
- 
 //SQLite 3 Retrieve Data -  Picker View
 //  SecondViewController.swift
 //  DataPickerView
-//  Created by Dhaval on 25/04/22.
-
+ 
 import UIKit
 import SQLite3
  
@@ -360,12 +474,9 @@ class SecondViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDa
         }
     }
 }
- 
 //SQLite 3 Insert Data
 //  ViewController.swift
 //  StudentDB
-//  Created by Dhaval on 20/04/22.
-
 import UIKit
 //Step 1 : Import required SQLite Library
 import SQLite3
@@ -406,17 +517,13 @@ class ViewController: UIViewController {
         if sqlite3_exec(dpPointer, t2, nil, nil, nil) == SQLITE_OK
         {
             print("Recored Inserted successfully..")
-        }
-        
+        }   
     }
- 
 }
- 
 //JSON - Part - I
 //  ViewController.swift
 //  News
-//  Created by Dhaval on 01/04/22.
-
+ 
 import UIKit
  
 class ViewController: UIViewController {
@@ -448,31 +555,22 @@ class ViewController: UIViewController {
             let imgUrl = article.value(forKey: "urlToImage")
             self.imgList = imgUrl as! [String]
             print(data,title,imgUrl)
-        }
-        
+        }   
         task.resume()
     }   
 }
-//TableView 
-//  ViewController.swift
-//  Car Table List
-//  Created by Dhaval on 01/04/22.
+//TableView
  
 import UIKit
- 
 class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource {
- 
     var listImage = ["https://media.zigcdn.com/media/model/2021/Nov/amg-a45-5_360x240.jpg","https://media.zigcdn.com/media/model/2021/Sep/amg-glc-43_360x240.jpg","https://media.zigcdn.com/media/model/2021/Sep/amg-e-63_360x240.jpg","https://media.zigcdn.com/media/model/2021/Aug/amg-gle-63_360x240.jpg"]
     var listTitle = ["Mercedes-Benz AMG A45 S","Mercedes-Benz AMG GLC 43","Mercedes-Benz AMG E 63","Mercedes-Benz AMG GLE 63 S"]
     var listPrice = ["Rs. 79.50 Lakh","Rs. 85.40 Lakh","Rs. 1.73 Crore","Rs. 2.10 Crore"]
-    
    // var imgArray = ["1.jpg","2.jpg","3.jpg","4.jpg"]
-    
     // No of items/rows
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return listTitle.count
     }
-    
     // value of each item
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
@@ -491,18 +589,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         // Do any additional setup after loading the view.
     }
 }
- 
 //UIImageView and Alert Controller
-//  ViewController.swift
 //  ImageAlert
-//  Created by Dhaval on 14/03/22.
- 
 import UIKit
- 
 class ViewController: UIViewController {
- 
     //Create outlets here
-    
     @IBOutlet weak var myImage: UIImageView!
     
     override func viewDidLoad() {
@@ -510,21 +601,17 @@ class ViewController: UIViewController {
         //to show static image from project dir
         myImage.image = UIImage(named: "hack.jpg")
     }
- 
     //Create Actions here
     @IBAction func submit(_ sender: Any) {
         //click event for submit
-        
         let alert = UIAlertController(title: "Warning", message: "Do you want to load image from URL?", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: {
             ACTION in
             self.change_image()
         }))
         alert.addAction(UIAlertAction(title: "No", style: .destructive, handler: nil))
-        self.present(alert,animated: true,completion: nil)
-        
-    }
-    
+        self.present(alert,animated: true,completion: nil)   
+    }   
     func change_image()
     {
         //OPEN Image from URL
@@ -532,4 +619,208 @@ class ViewController: UIViewController {
         let imgData = try! Data(contentsOf: imgURL!)
         myImage.image = UIImage(data: imgData)
     }
+}
+Session 1 : Fundamentals of Swift
+Date : 23/02/2022
+LAB : 2MCA4
+import UIKit
+/*
+print("Hello World")
+//var a:Int = 20
+//var name:String = "Dhaval"
+var a = 20
+var b = 30
+var c = a + b
+var name = "Dhaval"
+print(a,b,c,name,separator: "--",terminator: "\nThank You")
+*/
+//Function with return type
+func display()
+{
+    print("Hello RKU")
+}
+display()
+func add(a:Int,b:Int)
+{
+    var c = a + b
+    print(c)
+}
+add(a: 20, b: 50)
+//Function with return type
+func sub(a:Int,b:Int) -> Int
+{
+    var c = b - a
+    return c
+}
+var ans = Double(sub(a: 30, b: 50))
+ans = ans + (ans * 0.18) 
+print(ans)
+//Separator (Separate values with particular seperator)
+
+print(10,20,"Fenil",separator:"-")
+
+//Terminator (Terminator prints at the end of the statement)
+
+print(10,20,"Fenil",separator:"-",terminator:"\nThank you"))
+
+
+//Function
+
+func display()
+{
+    print("Swift")
+}
+
+display()
+
+//Function with parameter
+
+func parameter(x:Int,y:Int)
+{
+    let z = x + y
+    print(z)
+}
+
+parameter(x:10,y:20)
+
+//Function with return
+
+func withreturn(a:Int,b:Int)-> Int
+{
+    let c = a + b
+    return c
+}
+
+var ans = withreturn(a:10,b:30)
+print(ans)
+
+//Minimum from 3 number
+
+var x = 100
+var y = 200
+var z = 30
+
+if(x < y && x < z)
+{
+    print("X is min")
+}
+if(y < x && y < z)
+{
+    print("Y is min")
+}
+if(z < y && z < x)
+{
+    print("Z is min")
+}
+
+
+//Prime, Not Prime
+
+var flag = 0
+var n:Int = 3
+
+for i in 2...n-1
+{
+    if(n%i == 0)
+    {
+        flag = 1
+    }
+}
+
+if(flag == 1)
+{
+    print("\(n) Number is Non-Prime")
+}
+else
+{
+    print("\(n) Number is Prime")
+}
+//Factorial number
+
+var fact = 1
+var num = 5
+
+for i in 1...num
+{
+    fact = fact * i
+}
+
+print("Factorial of \(num) is: ",fact)
+
+//Factorial using recursion
+
+func fact(n:Int)->Int
+{
+    if(n == 1)
+    {
+        return 1;
+    }
+    else
+    {
+        return(n * fact(n:n-1))
+    }
+}
+
+
+var ans = fact(n:5)
+print(ans)
+
+//Swap without third variable
+
+var a = 10
+var b = 20
+
+a = a + b
+b = a - b
+a = a - b
+
+print(a,b)
+
+
+//Palindrome
+
+var num = 10
+var temp = num
+var z = 0
+var i = 0
+for i in 1...num
+{
+    i = num % 10
+    z = (z * 10) + i
+    num = num / 10
+}
+
+
+//Fibonacci
+
+var n1 = 0
+var n2 = 1
+var n3 = 0
+var c = 10
+
+for _ in 2...c-1
+{
+    n3 = n1 + n2
+    print(n3)
+    n1 = n2
+    n2 = n3
+}
+//Dictionary
+var someDict:[Int:String] = [1:"One", 2:"Two", 3:"Three"]
+//enum
+enum names {
+   case Swift
+   case Closures
+}
+
+var lang = names.Closures
+lang = .Closures
+
+switch lang {
+   case .Swift:
+      print("Welcome to Swift")
+   case .Closures:
+      print("Welcome to Closures")
+   default:
+      print("Introduction")
 }
